@@ -8,7 +8,7 @@ The other parts of Southwood can be found here:
 [Southwood-NWGrabber](https://github.com/jeppevinkel/Southwood-NWGrabber)
 
 ## Installation
-To get your server on the Southwood list, simply add the plugin dll to your plugins folder.
+To get your server on the Southwood list, simply grab the [latest release](https://github.com/jeppevinkel/Southwood-PLUGIN/releases/latest) and add the dll file to your plugins folder.
 
 ## Web
 [Server Browser](https://southwoodstudios.com/browser/)
