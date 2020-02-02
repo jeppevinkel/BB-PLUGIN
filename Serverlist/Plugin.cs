@@ -8,7 +8,7 @@ namespace Serverlist
 {
 	public class Plugin : EXILED.Plugin
 	{
-		private static string ServerAuthUrl = "http://api.southwoodstudios.com/addservertolist/";
+		private static string ServerAuthUrl = "https://api.southwoodstudios.com/addservertolist/";
 		public static bool Update = true;
 
 		public override void OnEnable()
