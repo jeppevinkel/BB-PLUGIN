@@ -13,6 +13,11 @@ namespace Serverlist
 
 		public override void OnEnable()
 		{
+			if(!Plugin.Config.GetBool("sw_enable", true))
+			{
+				return;
+			}
+
 			try
 			{
 				Debug("Initializing event handlers..");
