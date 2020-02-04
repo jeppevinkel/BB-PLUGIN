@@ -16,11 +16,11 @@ namespace Serverlist
             public List<string> values;
         }
 
-        public static _ServerInfo GetServerInfo()
+        public static _ServerInfo GetServerInfo(string token = null, string version = "0.0")
         {
             _ServerInfo info = new _ServerInfo();
 
-            info.param = Plugin.Update ? new List<string> { "ip", "players", "playerList", "port", "pastebin", "gameVersion", "info", "privateBeta", "staffRA", "friendlyFire", "geoblocking", "modded", "whitelist", "accessRestrictions", "emailSet", "enforceSameIp", "enforceSameAsn" } : new List<string> { "ip", "players", "port", "enforceSameIp", "enforceSameAsn" };
+            info.param = Plugin.Update ? new List<string> { "ip", "players", "playerList", "port", "pastebin", "gameVersion", "info", "privateBeta", "staffRA", "friendlyFire", "geoblocking", "modded", "whitelist", "accessRestrictions", "emailSet", "enforceSameIp", "enforceSameAsn", "maxPlayers", "curPlayers", "pluginVersion" } : new List<string> { "ip", "players", "port", "enforceSameIp", "enforceSameAsn", "curPlayers" };
 
             if (Plugin.Update)
             {
@@ -43,7 +43,12 @@ namespace Serverlist
                 Plugin.Debug(ServerConsole.EnforceSameIp.ToString());
                 Plugin.Debug((ServerConsole.EnforceSameAsn).ToString());
 
-                info.values = new List<string> { ServerConsole.Ip, $"{ServerConsole.PlayersAmount}/{CustomNetworkManager.slots}", ServerConsole._verificationPlayersList, CustomLiteNetLib4MirrorTransport.Singleton.port.ToString(), GameCore.ConfigFile.ServerConfig.GetString("serverinfo_pastebin_id", "7wV681fT"), CustomNetworkManager.CompatibleVersions[0], Misc.Base64Encode(ServerConsole.singleton.RefreshServerNameSafe()), CustomNetworkManager.isPrivateBeta.ToString(), ServerStatic.PermissionsHandler.StaffAccess.ToString(), ServerConsole.FriendlyFire.ToString(), ((byte)CustomLiteNetLib4MirrorTransport.Geoblocking).ToString(), CustomNetworkManager.Modded.ToString(), ServerConsole.WhiteListEnabled.ToString(), ServerConsole.AccessRestriction.ToString(), ServerConsole._emailSet.ToString(), ServerConsole.EnforceSameIp.ToString(), ServerConsole.EnforceSameAsn.ToString() };
+                info.values = new List<string> { ServerConsole.Ip, $"{ServerConsole.PlayersAmount}/{CustomNetworkManager.slots}", ServerConsole._verificationPlayersList, CustomLiteNetLib4MirrorTransport.Singleton.port.ToString(), GameCore.ConfigFile.ServerConfig.GetString("serverinfo_pastebin_id", "7wV681fT"), CustomNetworkManager.CompatibleVersions[0], Misc.Base64Encode(ServerConsole.singleton.RefreshServerNameSafe()), CustomNetworkManager.isPrivateBeta.ToString(), ServerStatic.PermissionsHandler.StaffAccess.ToString(), ServerConsole.FriendlyFire.ToString(), ((byte)CustomLiteNetLib4MirrorTransport.Geoblocking).ToString(), CustomNetworkManager.Modded.ToString(), ServerConsole.WhiteListEnabled.ToString(), ServerConsole.AccessRestriction.ToString(), ServerConsole._emailSet.ToString(), ServerConsole.EnforceSameIp.ToString(), ServerConsole.EnforceSameAsn.ToString(), CustomNetworkManager.slots.ToString(), ServerConsole.PlayersAmount.ToString(), version };
+                if (token != null)
+                {
+                    info.param.Add("apiToken");
+                    info.values.Add(token);
+                }
             }
             else
             {
@@ -55,7 +60,7 @@ namespace Serverlist
                 Plugin.Debug(ServerConsole.EnforceSameIp.ToString());
                 Plugin.Debug(ServerConsole.EnforceSameAsn.ToString());
 
-                info.values = new List<string> { ServerConsole.Ip, $"{ServerConsole.PlayersAmount}/{CustomNetworkManager.slots}", CustomLiteNetLib4MirrorTransport.Singleton.port.ToString(), ServerConsole.EnforceSameIp.ToString(), ServerConsole.EnforceSameAsn.ToString() };
+                info.values = new List<string> { ServerConsole.Ip, $"{ServerConsole.PlayersAmount}/{CustomNetworkManager.slots}", CustomLiteNetLib4MirrorTransport.Singleton.port.ToString(), ServerConsole.EnforceSameIp.ToString(), ServerConsole.EnforceSameAsn.ToString(), ServerConsole.PlayersAmount.ToString() };
             }
 
             Plugin.Update = false;
