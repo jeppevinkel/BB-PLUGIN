@@ -11,11 +11,10 @@ The other parts of Southwood can be found here:
 To get your server on the Southwood list, simply grab the [latest release](https://github.com/jeppevinkel/Southwood-PLUGIN/releases/latest) and add the dll file to your plugins folder.
 
 ## Configuration
-There's only one config option:
 ```yml
-sw_enable: true
+sw_enable: true # Used to disable the server in individual servers.
+sw_api: <key> # Used for the upcoming admin dashboard. (Currently here for test purposes)
 ```
-Used to disable to plugin in different servers.
 
 ## Web
 [Server Browser](https://southwoodstudios.com/browser/)
