@@ -3,7 +3,7 @@ using EXILED;
 using Serverlist.Extensions;
 using MEC;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using Utf8Json;
 
 namespace Serverlist
 {
@@ -13,7 +13,7 @@ namespace Serverlist
 		public static bool Update = true;
 
 		private string apiToken;
-		private string version = "1.2";
+		private string version = "1.3";
 
 		public override void OnEnable()
 		{
@@ -54,21 +54,26 @@ namespace Serverlist
 			while (true)
 			{
 				ServerInfoPacker._ServerInfo info = ServerInfoPacker.GetServerInfo(apiToken, version);
-				string response = WebExtensions.WebRequest(ServerAuthUrl, info.param, info.values);
-				JObject o = JObject.Parse(response);
-				ListResponse lr = o.ToObject<ListResponse>();
-
-				Debug($"Dump info: Type: {lr.type}, Success: {lr.success}.");
-				if (lr.update)
+				byte[] response = WebExtensions.WebRequestBytes(ServerAuthUrl, info.param, info.values);
+				try
 				{
-					Info($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
-				}
-				if (lr.error != null)
-				{
-					Error(lr.error);
-				}
+					ListResponse lr = JsonSerializer.Deserialize<ListResponse>(response);
 
-				//Debug(WebExtensions.WebRequest(ServerAuthUrl, info.param, info.values));
+					Debug($"Dump info: Type: {lr.type}, Success: {lr.success}.");
+					if (lr.update)
+					{
+						Info($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
+					}
+					if (lr.error != null)
+					{
+						Error(lr.error);
+					}
+				}
+				catch (Exception e)
+				{
+					Error(e.Message);
+				}
+				
 				yield return Timing.WaitForSeconds(30);
 			}
 		}
