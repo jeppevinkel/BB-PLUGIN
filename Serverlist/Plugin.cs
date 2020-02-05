@@ -4,6 +4,7 @@ using Serverlist.Extensions;
 using MEC;
 using System.Collections.Generic;
 using Utf8Json;
+using System.Text;
 
 namespace Serverlist
 {
@@ -12,7 +13,7 @@ namespace Serverlist
 		private static string ServerAuthUrl = "https://api.southwoodstudios.com/addservertolist/";
 		public static bool Update = true;
 
-		private string apiToken;
+		private string apiToken = "null";
 		private string version = "1.3";
 
 		public override void OnEnable()
@@ -26,7 +27,7 @@ namespace Serverlist
 			{
 				Debug("Initializing event handlers..");
 
-				apiToken = Plugin.Config.GetString("sw_api", null);
+				apiToken = Plugin.Config.GetString("sw_api", "null");
 
 				Timing.RunCoroutine(UpdatePlayerlist());
 				Timing.RunCoroutine(SetUpdate());
@@ -50,28 +51,42 @@ namespace Serverlist
 
 		private IEnumerator<float> UpdatePlayerlist()
 		{
-			yield return Timing.WaitForSeconds(3);
+			while (ServerConsole.Ip == null)
+			{
+				yield return Timing.WaitForSeconds(5);
+			}
 			while (true)
 			{
 				ServerInfoPacker._ServerInfo info = ServerInfoPacker.GetServerInfo(apiToken, version);
-				byte[] response = WebExtensions.WebRequestBytes(ServerAuthUrl, info.param, info.values);
+				byte[] response = null;
 				try
 				{
-					ListResponse lr = JsonSerializer.Deserialize<ListResponse>(response);
-
-					Debug($"Dump info: Type: {lr.type}, Success: {lr.success}.");
-					if (lr.update)
-					{
-						Info($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
-					}
-					if (lr.error != null)
-					{
-						Error(lr.error);
-					}
+					response = WebExtensions.WebRequestBytes(ServerAuthUrl, info.param, info.values);
 				}
 				catch (Exception e)
 				{
-					Error(e.Message);
+					Error($"[Web error] {e.Message}");
+				}
+				if (response != null)
+				{
+					try
+					{
+						ListResponse lr = JsonSerializer.Deserialize<ListResponse>(response);
+
+						Debug($"Dump info: Type: {lr.type}, Success: {lr.success}.");
+						if (lr.update)
+						{
+							Info($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
+						}
+						if (lr.error != null)
+						{
+							Error(lr.error);
+						}
+					}
+					catch (Exception e)
+					{
+						Error($"[Json error] {e.Message}\n{Encoding.UTF8.GetString(response)}");
+					}
 				}
 				
 				yield return Timing.WaitForSeconds(30);
