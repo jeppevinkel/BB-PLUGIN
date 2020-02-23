@@ -15,7 +15,7 @@ namespace Serverlist
 		public static bool Update = true;
 
 		private string apiToken = "null";
-		private readonly string version = "2.0.0";
+		private readonly string version = "2.0.1";
 
 		private Thread updatePlayerlist;
 		private Thread setUpdate;
@@ -82,7 +82,7 @@ namespace Serverlist
 						Log.Debug($"Dump info: Type: {lr.type}, Success: {lr.success}.");
 						if (lr.update)
 						{
-							Log.Info($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
+							Log.Warn($"Please update to the latest version of the serverlist for best compatibility. (Latest version: {lr.latestVersion}, Your version: {version})");
 						}
 						if (lr.error != null)
 						{
